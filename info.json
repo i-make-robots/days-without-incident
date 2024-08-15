@@ -1,0 +1,9 @@
+{
+  "name": "days-without-incident",
+  "version": "0.1.0",
+  "title": "Days Without Incident",
+  "author": "i-make-robots",
+  "factorio_version": "1.1",
+  "dependencies": ["base >= 1.1"],
+  "description": "Keep your facory safe!  Displays 'Days Without Incident' and 'Previous Best'. Includes an incident report button."
+}
