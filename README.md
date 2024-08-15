@@ -9,6 +9,8 @@
 
 ### Credits/legal
 
-Created by Dan Royer (dan@marginallyclever.com) 2024
+Created by Dan Royer (dan@marginallyclever.com)
+
+Multi-surface support by Subject-314159.
 
 Icons supplied by https://icons8.com
