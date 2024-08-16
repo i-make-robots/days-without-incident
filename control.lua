@@ -51,6 +51,12 @@ script.on_event(defines.events.on_lua_shortcut, function(event)
   end
 end)
 
+-- Event when a player dies
+script.on_event(defines.events.on_player_died, function(event)
+  local player = game.players[event.player_index]
+  reset_counter(player)
+end)
+
 -- Get ticks per day; if the day/night cycle is always night, return default value of 25000 ticks
 local function calculate_day_length(surface)
   -- this could get tricky if there are many planets with different cycle rates.
