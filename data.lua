@@ -5,14 +5,10 @@ data:extend({
     order = "a[alt-mode]-b[reset-days]",
     action = "lua",
     toggleable = false,
-    icon =
-    {
-      filename = "__days-without-incident__/icons8-incident-32.png",
-      priority = "extra-high-no-scale",
-      size = 32,
-      scale = 1,
-      flags = {"gui-icon"}
-    },
+    icon = "__days-without-incident__/icons8-warning-48.png",
+    icon_size = 48,
+    small_icon = "__days-without-incident__/icons8-warning-16.png",
+    small_icon_size = 16,
     associated_control_input = "reset-days-hotkey",
     localised_name = {"days_without_incident.reset"}
   },
@@ -22,14 +18,11 @@ data:extend({
     order = "a[alt-mode]-b[report-days]",
     action = "lua",
     toggleable = false,
-    icon =
-    {
-      filename = "__days-without-incident__/icons8-report-32.png",
-      priority = "extra-high-no-scale",
-      size = 32,
-      scale = 1,
-      flags = {"gui-icon"}
-    },
+    icon = "__days-without-incident__/icons8-report-48.png",
+    icon_size = 48,
+    small_icon = "__days-without-incident__/icons8-report-16.png",
+    small_icon_size = 16,
+  
     associated_control_input = "report-days-hotkey",
     localised_name = {"days_without_incident.report"}
   }

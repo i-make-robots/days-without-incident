@@ -1,5 +1,5 @@
 local function report_to_console(surface_index)
-  local s = global.surfaces[surface_index]
+  local s = storage.surfaces[surface_index]
 
   game.print({"days_without_incident.full-report", s.days_without_incident, s.previous_best, s.name}) -- Adding surface
 end
@@ -12,8 +12,8 @@ local function reset_counter(player)
       return
   end
 
-  -- Update directly in global
-  local s = global.surfaces[player.surface.index]
+  -- Update directly in storage
+  local s = storage.surfaces[player.surface.index]
   s.previous_best = math.max(s.previous_best, s.days_without_incident)
   player.print({"days_without_incident.an-incident", s.days_without_incident, s.previous_best, s.name}) -- Adding surface
   s.days_without_incident = 0
@@ -21,8 +21,8 @@ end
 
 -- increment the counter every in-game day
 local function on_midnight(surface_index)
-  -- Get the global surface
-  local s = global.surfaces[surface_index]
+  -- Get the storage surface
+  local s = storage.surfaces[surface_index]
 
   -- Update stats
   s.days_without_incident = s.days_without_incident + 1
@@ -51,6 +51,12 @@ script.on_event(defines.events.on_lua_shortcut, function(event)
   end
 end)
 
+-- Event when a player dies
+script.on_event(defines.events.on_player_died, function(event)
+  local player = game.players[event.player_index]
+  reset_counter(player)
+end)
+
 -- Get ticks per day; if the day/night cycle is always night, return default value of 25000 ticks
 local function calculate_day_length(surface)
   -- this could get tricky if there are many planets with different cycle rates.
@@ -60,17 +66,17 @@ end
 local function init_surface(surface_index)
   -- Early exit in case the first game surface triggers before on_init, or if we didn't find the surface in game
   local surface = game.get_surface(surface_index)
-  if not global.surfaces or not surface then
+  if not storage.surfaces or not surface then
       return
   end
 
   -- This might need to create some additional logic to ignore "subsurfaces" e.g. from SE's pyramid or from factorissimo
 
   -- Init the current surface array
-  if not global.surfaces[surface_index] then
-      global.surfaces[surface_index] = {}
+  if not storage.surfaces[surface_index] then
+      storage.surfaces[surface_index] = {}
   end
-  local s = global.surfaces[surface_index]
+  local s = storage.surfaces[surface_index]
 
   -- Init individual parameters
   s.days_without_incident = s.days_without_incident or 0
@@ -83,9 +89,9 @@ local function init_surface(surface_index)
 end
 
 local function init_surfaces()
-  -- Init global.surfaces
-  if not global.surfaces then
-      global.surfaces = {}
+  -- Init storage.surfaces
+  if not storage.surfaces then
+      storage.surfaces = {}
   end
 
   -- Init each surface
@@ -102,7 +108,7 @@ end)
 script.on_configuration_changed(function()
   -- When a mod configuration changes (e.g. new version) then saves that already 
   -- include this mod do not re-run on_init but on_configuration_changed, so we 
-  -- need to make sure that old saves also get the proper global initialized
+  -- need to make sure that old saves also get the proper storage initialized
   init_surfaces()
 end)
 
@@ -112,8 +118,8 @@ script.on_event(defines.events.on_surface_created, function(e)
 end)
 
 script.on_event(defines.events.on_tick, function(e)
-  -- Midnight handler per global surface
-  for i, s in pairs(global.surfaces) do
+  -- Midnight handler per storage surface
+  for i, s in pairs(storage.surfaces) do
     -- Get the surface
     local surface = game.get_surface(i)
     if surface then
@@ -136,7 +142,7 @@ script.on_event(defines.events.on_tick, function(e)
           -- If the last tick's daytime is bigger than the current tick's daytime it means we have a new day
           on_midnight(i)
 
-          -- Update the global.surface ticks per day, since it could be that other mods have updated it in the meantime
+          -- Update the storage.surface ticks per day, since it could be that other mods have updated it in the meantime
           s.ticks_per_day = surface.ticks_per_day
         end
       end
